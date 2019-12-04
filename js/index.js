@@ -11,7 +11,6 @@ $(document).ready(function() {
 	];
 	var days = ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday'];
 
-
 	var thisMonth = months[currentMonth]; // Will be a string of current month
 	var prevMonth = months[currentMonth - 1];
 	var nextMonth = months[currentMonth + 1];
@@ -20,29 +19,30 @@ $(document).ready(function() {
 	var year = new Date().getFullYear();
 
 	// Generate weekday headers
-	for (i = 0; i < days.length; i++) {
+	$(days).each(function(i, el) {
 		var calendarHeadItem = document.createElement('div');
 		calendarHeadItem.className = 'head__item';
-		calendarHeadItem.innerText = days[i];
+		calendarHeadItem.innerText = el;
 		calendarHead.append(calendarHeadItem);
-	}
+	});
 
-	for (var i = 0; i < months.length; i++) {
-		calendarYear[months[i]] = {};
-	};
+	$(months).each(function(i, el) {
+		calendarYear[el] = {};
+	});
 
 	function daysInMonth(year, month) {
 		return new Date(year, month, 0).getDate();
 	};
 
-	for (var i = 0; i< months.length; i++) {
-		var daysInThisMonth = daysInMonth(year, i + 1);
-		for (var j = 1; j < daysInThisMonth + 1; j++) {
-			calendarYear[months[i]][j] = {};
-			var dayOfWeek = new Date(months[i] + ' ' + j + ', ' + year);
-			calendarYear[months[i]][j].dayOfWeek = days[dayOfWeek.getDay()];
-		};
-	};
+	$(months).each(function(i, month) {
+		$([...Array(daysInMonth(year, i + 1)).keys()]).each(function(j, _day) {
+			var day = _day + 1;
+			calendarYear[month][day] = {};
+			var dayOfWeek = new Date(month + ' ' + day + ', ' + year);
+			calendarYear[month][day].dayOfWeek = days[dayOfWeek.getDay()];
+			calendarYear[month][day].calendarDate = day;
+		});
+	});
 
 	calendarYear.November['19'].event = {
 		title: 'Birthday Party',
@@ -53,8 +53,22 @@ $(document).ready(function() {
 	var willsMonth = new Date().getMonth();
 	var willsDay = new Date().getDate();
 
-	console.log(calendarYear[months[willsMonth]][willsDay]);
-	console.log(calendarYear);
+	var modalContainer = $('#modals');
+	var newEvent = $('#new-event');
+	var cancelModal = $('#cancel-modal');
+
+	function openModal() {
+		$(modalContainer).css({'opacity': '1', 'pointer-events': 'auto'})
+	};
+
+	function closeModal() {
+		$(modalContainer).css({'opacity': '0', 'pointer-events': 'none'})
+	};
+
+	$(newEvent).click(openModal);
+	$(cancelModal).click(closeModal);
+
+	console.log(calendarYear[months[willsMonth]]);
 });
 
 
