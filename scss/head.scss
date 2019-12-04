@@ -1,0 +1,18 @@
+#calendar__head {
+    display: flex;
+    border-bottom: 1px solid $light-gray;
+    cursor: default;
+
+    .head__item {
+        flex: 0 0 14.2857%;
+        height: 3rem;
+        border-right: 1px solid $light-gray;
+        line-height: 3rem;
+        text-align: center;
+        font-weight: 600;
+    
+        &:last-child {
+            border-right: none;
+        }
+    }
+}

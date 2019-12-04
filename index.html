@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+	<link rel="stylesheet" href="css/main.css">
+
+	<title>Planner - Calendar App</title>
+</head>
+<body>
+	<div id="app">
+		<header id="header">
+			<div id="header__logo">
+				<img src="asset/img/logo.svg" alt="Planner logo">
+			</div>
+	
+			<div id="header__control">
+				<button type="button" id="prev" class="btn btn--square btn--flat">
+					<img src="asset/icon/arrow-left.svg" alt="Previous">
+				</button>
+				<button id="next" class="btn btn--square btn--flat">
+					<img src="asset/icon/arrow-right.svg" alt="Next">
+				</button>
+			</div>
+
+			<h3 id="header__title"></h3>
+		</header>
+	
+		<main id="main">
+			<article id="menu">
+				<button id="new-event" class="btn btn--primary">
+					<img src="asset/icon/plus.svg" alt="">
+					New
+				</button>
+			</article>
+	
+			<article id="calendar">
+				<section id="calendar__head"></section>
+				<section id="calendar__dates"></section>
+			</article>
+		</main>
+
+		<div id="modals" class="modals" style="opacity:0; pointer-events:none;">
+			<form id="modal" class="modal">
+				<div class="modal__header">
+					<h3>Create a New Event</h3>
+				</div>
+				<div class="modal__body">
+					<div class="input">
+						<label for="event-name" class="input__label">Name</label>
+						<input type="input" id="event-name" class="input__item" placeholder="Name of the event">
+					</div>
+					<div class="input">
+						<label for="event-date" class="input__label">Date</label>
+						<input type="datetime-local" id="event-date" class="input__item" placeholder="Name of the event">
+					</div>
+				</div>
+				<div class="modal__footer">
+					<button type="button" id="cancel-modal" class="btn btn--secondary">Cancel</button>
+					<input type="submit" id="submit-modal" class="btn btn--primary" value="Create Event"/>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+body {
+	height: 100vh;
+}
+
+#app {
+	height: inherit;
+	display: flex;
+	flex-direction: column;
+}
+
+#header {
+	flex: 0 0 4rem;
+	padding: $spacing-0 $spacing-4;
+	border-bottom: 1px solid $light-gray;
+	display: flex;
+	align-items: center;
+
+	&__logo {
+		width: 13.5rem;
+		height: 2rem;
+	}
+
+	&__control {
+		display: flex;
+		margin-right: 24px;
+
+		.control {
+			width: 48px;
+			height: 48px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			cursor: pointer;
+		}
+	}
+}
+
+#main {
+	height: inherit;
+	display: flex;
+
+	#menu {
+		flex: 0 0 15rem;
+		height: 100%;
+		padding: $spacing-3;
+		border-right: 1px solid $light-gray;
+
+		.btn {
+			width: 100%;
+		}
+	}
+
+	#calendar {
+		flex: 1 1 100%;
+		display: flex;
+		flex-direction: column;
+	}
+}
+
+#calendar__dates {
+	flex: 1 1 100%;
+
+	.week {
+		height: 16.6666%;
+		display: flex;
+		border-bottom: 1px solid $light-gray;
+
+		&:last-child {
+			border-bottom: none;
+		}
+	}
+}
