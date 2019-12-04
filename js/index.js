@@ -22,7 +22,7 @@ $(document).ready(function() {
 	// Generate weekday headers
 	for (i = 0; i < days.length; i++) {
 		var calendarHeadItem = document.createElement('div');
-		calendarHeadItem.class = 'head__item';
+		calendarHeadItem.className = 'head__item';
 		calendarHeadItem.innerText = days[i];
 		calendarHead.append(calendarHeadItem);
 	}
