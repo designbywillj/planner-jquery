@@ -59,14 +59,6 @@ body {
 
 #calendar__dates {
 	flex: 1 1 100%;
-
-	.week {
-		height: 16.6666%;
-		display: flex;
-		border-bottom: 1px solid $light-gray;
-
-		&:last-child {
-			border-bottom: none;
-		}
-	}
+	flex-wrap: wrap;
+	display: flex;
 }

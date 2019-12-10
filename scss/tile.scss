@@ -1,7 +1,12 @@
 .tile {
 	flex: 0 0 14.2857%;
+	height: 16.6666%;
 	padding: $spacing-2;
+	border-bottom: 1px solid $light-gray;
 	border-right: 1px solid $light-gray;
+	display: flex;
+	justify-content: flex-end;
+	flex-direction: column-reverse;
 
 	&:last-child {
 		border-right: none;

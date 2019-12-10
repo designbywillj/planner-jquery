@@ -50,22 +50,98 @@ $(document).ready(function() {
 		location: '123 Hickory St.'
 	};
 
+	var willsYear = new Date().getFullYear();
 	var willsMonth = new Date().getMonth();
 	var willsDay = new Date().getDate();
+
+	var grid = [...Array(6 * 7).keys()];
+
+	function renderGrid() {
+		$('#calendar__dates').empty();
+
+		$(grid).each(function(i) {
+			var dayOfRowWeek = i % 7;
+			var dayOfColumn = i + 1;
+	
+			var tile = document.createElement('div');
+			var tileNumber = document.createElement('div');
+			tile.className = 'tile';
+			tileNumber.className = 'tile__number';
+
+			function pad(number) {
+				return (number < 10 ? '0' : '') + number;
+		   	};
+			
+			if (calendarYear[months[willsMonth]]
+				&& calendarYear[months[willsMonth]][dayOfColumn]
+				&& calendarYear[months[willsMonth]][dayOfColumn].dayOfWeek === days[dayOfRowWeek]) {
+					tile.setAttribute('date', willsYear + '-' + pad(willsMonth+1) + '-' + pad(calendarYear[months[willsMonth]][dayOfColumn].calendarDate));
+					tileNumber.innerText = calendarYear[months[willsMonth]][dayOfColumn].calendarDate;
+					tile.style.cursor = 'pointer';
+					if (calendarYear[months[willsMonth]][dayOfColumn] && calendarYear[months[willsMonth]][dayOfColumn].eventName) {
+						var event = document.createElement('div');
+						event.className = 'tile__event';
+						event.innerText = calendarYear[months[willsMonth]][dayOfColumn].eventName;
+						$(tile).append(event);
+					}
+				} else {
+					tileNumber.innerText = '';
+					dayOfColumn = 0;
+			};
+				
+			tile.appendChild(tileNumber);
+			$('#calendar__dates').append(tile);
+		});
+	};
+	renderGrid();
 
 	var modalContainer = $('#modals');
 	var newEvent = $('#new-event');
 	var cancelModal = $('#cancel-modal');
 
-	function openModal() {
-		$(modalContainer).css({'opacity': '1', 'pointer-events': 'auto'})
-	};
+	// $('#prev').click(function() {
+	// 	willsMonth --;
+	// 	renderGrid();
+	// });
+
+	// $('#next').click(function() {
+	// 	willsMonth ++;
+	// 	renderGrid();
+	// });
+
+	$('#submit-modal').click(function(e) {
+		e.preventDefault();
+		var eventName = $('#event-name').val();
+		var eventDate = $('#event-date').val();
+		var convertedDate = new Date(eventDate);
+		var convertedYear = convertedDate.getFullYear();
+		var convertedMonth = convertedDate.getMonth();
+		var convertedDay = convertedDate.getDate();
+
+		calendarYear[months[convertedMonth]][convertedDay].eventName = eventName;
+		console.log({eventName, convertedYear, convertedMonth, convertedDay});
+		renderGrid();
+		closeModal();
+		$('#event-name').val('');
+		$('#event-date').val('');
+	});
+
+	$(newEvent).click(function openModal() {
+		$(modalContainer).css({'opacity': '1', 'pointer-events': 'auto'});
+	});
+
+	$('.tile').click(function openModal(e) {
+		$(modalContainer).css({'opacity': '1', 'pointer-events': 'auto'});
+		$('#event-date').val(e.target.getAttribute('date'));
+	});
 
 	function closeModal() {
-		$(modalContainer).css({'opacity': '0', 'pointer-events': 'none'})
+		$(modalContainer).css({'opacity': '0', 'pointer-events': 'none'});
+		$('#event-name').val('');
+		$('#event-date').val('');
 	};
 
-	$(newEvent).click(openModal);
+	$(cancelModal).click(closeModal);
 	$(cancelModal).click(closeModal);
 
 	console.log(calendarYear[months[willsMonth]]);
