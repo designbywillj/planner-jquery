@@ -44,7 +44,7 @@ $(document).ready(function() {
 		});
 	});
 
-	calendarYear.November['19'].event = {
+	calendarYear.December['19'].event = {
 		title: 'Birthday Party',
 		time: '9:30pm',
 		location: '123 Hickory St.'
@@ -75,7 +75,7 @@ $(document).ready(function() {
 			if (calendarYear[months[willsMonth]]
 				&& calendarYear[months[willsMonth]][dayOfColumn]
 				&& calendarYear[months[willsMonth]][dayOfColumn].dayOfWeek === days[dayOfRowWeek]) {
-					tile.setAttribute('date', willsYear + '-' + pad(willsMonth+1) + '-' + pad(calendarYear[months[willsMonth]][dayOfColumn].calendarDate));
+					$(tile).attr('date', willsYear + '-' + pad(willsMonth+1) + '-' + pad(calendarYear[months[willsMonth]][dayOfColumn].calendarDate));
 					tileNumber.innerText = calendarYear[months[willsMonth]][dayOfColumn].calendarDate;
 					tile.style.cursor = 'pointer';
 					if (calendarYear[months[willsMonth]][dayOfColumn] && calendarYear[months[willsMonth]][dayOfColumn].eventName) {
@@ -83,11 +83,11 @@ $(document).ready(function() {
 						event.className = 'tile__event';
 						event.innerText = calendarYear[months[willsMonth]][dayOfColumn].eventName;
 						$(tile).append(event);
-					}
+					};
 				} else {
 					tileNumber.innerText = '';
 					dayOfColumn = 0;
-			};
+				};
 				
 			tile.appendChild(tileNumber);
 			$('#calendar__dates').append(tile);
@@ -99,15 +99,15 @@ $(document).ready(function() {
 	var newEvent = $('#new-event');
 	var cancelModal = $('#cancel-modal');
 
-	// $('#prev').click(function() {
-	// 	willsMonth --;
-	// 	renderGrid();
-	// });
+	$('#prev').click(function() {
+		willsMonth --;
+		renderGrid();
+	});
 
-	// $('#next').click(function() {
-	// 	willsMonth ++;
-	// 	renderGrid();
-	// });
+	$('#next').click(function() {
+		willsMonth ++;
+		renderGrid();
+	});
 
 	$('#submit-modal').click(function(e) {
 		e.preventDefault();
@@ -116,7 +116,7 @@ $(document).ready(function() {
 		var convertedDate = new Date(eventDate);
 		var convertedYear = convertedDate.getFullYear();
 		var convertedMonth = convertedDate.getMonth();
-		var convertedDay = convertedDate.getDate();
+		var convertedDay = convertedDate.getDate()+1;
 
 		calendarYear[months[convertedMonth]][convertedDay].eventName = eventName;
 		console.log({eventName, convertedYear, convertedMonth, convertedDay});
@@ -126,11 +126,13 @@ $(document).ready(function() {
 		$('#event-date').val('');
 	});
 
-	$(newEvent).click(function openModal() {
+	$(newEvent).click(function() {
 		$(modalContainer).css({'opacity': '1', 'pointer-events': 'auto'});
 	});
 
-	$('.tile').click(function openModal(e) {
+	$('.tile').on('click', function(e) {
+		console.log(e);
+		console.log(this);
 		$(modalContainer).css({'opacity': '1', 'pointer-events': 'auto'});
 		$('#event-date').val(e.target.getAttribute('date'));
 	});
