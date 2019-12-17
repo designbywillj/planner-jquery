@@ -1,6 +1,5 @@
 $(document).ready(function() {
 	// Variables
-	var currentMonth = new Date().getMonth();
 	var calendarHead = $('#calendar__head');
 	var months = [
 		'January', 'February', 'March',
@@ -50,8 +49,10 @@ $(document).ready(function() {
 	// Render dates of month and any stored events
 	var grid = [...Array(6 * 7).keys()];
 	function renderGrid(mth) {
+		// Clear grid
 		$('#calendar__dates').empty();
 
+		// Get all dates in month and create grid
 		$(grid).each(function(i) {
 			var dayOfRowWeek = i % 7;
 			var dayOfColumn = i + 1;
@@ -61,10 +62,12 @@ $(document).ready(function() {
 			tile.className = 'tile';
 			tileNumber.className = 'tile__number';
 
+			// Padding numbers < 10 with 0
 			function pad(number) {
 				return (number < 10 ? '0' : '') + number;
 		   	};
 			
+			// Assigning and appending dates and events to appropriate tiles
 			if (calendarYear[months[mth]]
 				&& calendarYear[months[mth]][dayOfColumn]
 				&& calendarYear[months[mth]][dayOfColumn].dayOfWeek === days[dayOfRowWeek]) {
@@ -76,7 +79,7 @@ $(document).ready(function() {
 						event.className = 'tile__event';
 						event.innerText = calendarYear[months[mth]][dayOfColumn].eventName;
 						$(event).attr('event-name', calendarYear[months[mth]][dayOfColumn].eventName);
-						$(event).attr('event-id', Math.random().toString(36).substring(7));
+						// $(event).attr('event-id', Math.random().toString(36).substring(7));
 						$(tile).append(event);
 					};
 				} else {
@@ -84,20 +87,20 @@ $(document).ready(function() {
 					dayOfColumn = 0;
 					tile.style.pointerEvents = 'none';
 				};
-				
+
 			tile.appendChild(tileNumber);
 			$('#calendar__dates').append(tile);
 		});
 	};
 	renderGrid(willsMonth);
 
-	// Navigation to previous month
+	// Navigate to previous month
 	$('#prev').click(function() {
 		willsMonths = willsMonth--;
 		renderGrid(willsMonth);
 	});
 
-	// Navigation to next month
+	// Navigate to next month
 	$('#next').click(function() {
 		renderGrid(willsMonth++);
 	});
