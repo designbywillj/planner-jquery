@@ -1,0 +1,17 @@
+.author {
+    width: calc(100% + 2rem);
+    margin-left: -$spacing-3;
+    padding: $spacing-3;
+    border-top: 1px solid $light-gray;
+    font-weight: 500;
+    text-decoration: none;
+
+    &__title {
+        margin-bottom: $spacing-1;
+        color: $dark-gray;
+    }
+
+    &__name {
+        color: $blue;
+    }
+}

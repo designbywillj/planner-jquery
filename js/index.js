@@ -2,7 +2,6 @@ $(document).ready(function() {
 	// Variables
 	var currentMonth = new Date().getMonth();
 	var calendarHead = $('#calendar__head');
-
 	var months = [
 		'January', 'February', 'March',
 		'April', 'May', 'June', 'July',
@@ -10,13 +9,16 @@ $(document).ready(function() {
 		'November', 'December'
 	];
 	var days = ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday'];
-
-	var thisMonth = months[currentMonth]; // Will be a string of current month
-	var prevMonth = months[currentMonth - 1];
-	var nextMonth = months[currentMonth + 1];
-
 	var calendarYear = {};
 	var year = new Date().getFullYear();
+	var willsYear = new Date().getFullYear();
+	var willsMonth = new Date().getMonth();
+	var modalContainer = $('#modals');
+	var newEvent = $('#new-event');
+	var cancelModal = $('#cancel-modal');
+
+	// Set month and year title
+	$('#header__title').text(months[willsMonth] + ' ' + willsYear);
 
 	// Generate weekday headers
 	$(days).each(function(i, el) {
@@ -26,14 +28,15 @@ $(document).ready(function() {
 		calendarHead.append(calendarHeadItem);
 	});
 
+	// Generate months of the year
 	$(months).each(function(i, el) {
 		calendarYear[el] = {};
 	});
 
+	// Get days in month
 	function daysInMonth(year, month) {
 		return new Date(year, month, 0).getDate();
 	};
-
 	$(months).each(function(i, month) {
 		$([...Array(daysInMonth(year, i + 1)).keys()]).each(function(j, _day) {
 			var day = _day + 1;
@@ -44,19 +47,9 @@ $(document).ready(function() {
 		});
 	});
 
-	calendarYear.December['19'].event = {
-		title: 'Birthday Party',
-		time: '9:30pm',
-		location: '123 Hickory St.'
-	};
-
-	var willsYear = new Date().getFullYear();
-	var willsMonth = new Date().getMonth();
-	var willsDay = new Date().getDate();
-
+	// Render dates of month and any stored events
 	var grid = [...Array(6 * 7).keys()];
-
-	function renderGrid() {
+	function renderGrid(mth) {
 		$('#calendar__dates').empty();
 
 		$(grid).each(function(i) {
@@ -72,217 +65,110 @@ $(document).ready(function() {
 				return (number < 10 ? '0' : '') + number;
 		   	};
 			
-			if (calendarYear[months[willsMonth]]
-				&& calendarYear[months[willsMonth]][dayOfColumn]
-				&& calendarYear[months[willsMonth]][dayOfColumn].dayOfWeek === days[dayOfRowWeek]) {
-					$(tile).attr('date', willsYear + '-' + pad(willsMonth+1) + '-' + pad(calendarYear[months[willsMonth]][dayOfColumn].calendarDate));
-					tileNumber.innerText = calendarYear[months[willsMonth]][dayOfColumn].calendarDate;
+			if (calendarYear[months[mth]]
+				&& calendarYear[months[mth]][dayOfColumn]
+				&& calendarYear[months[mth]][dayOfColumn].dayOfWeek === days[dayOfRowWeek]) {
+					$(tile).attr('date', willsYear + '-' + pad(mth+1) + '-' + pad(calendarYear[months[mth]][dayOfColumn].calendarDate));
+					tileNumber.innerText = calendarYear[months[mth]][dayOfColumn].calendarDate;
 					tile.style.cursor = 'pointer';
-					if (calendarYear[months[willsMonth]][dayOfColumn] && calendarYear[months[willsMonth]][dayOfColumn].eventName) {
+					if (calendarYear[months[mth]][dayOfColumn] && calendarYear[months[mth]][dayOfColumn].eventName) {
 						var event = document.createElement('div');
 						event.className = 'tile__event';
-						event.innerText = calendarYear[months[willsMonth]][dayOfColumn].eventName;
+						event.innerText = calendarYear[months[mth]][dayOfColumn].eventName;
+						$(event).attr('event-name', calendarYear[months[mth]][dayOfColumn].eventName);
+						$(event).attr('event-id', Math.random().toString(36).substring(7));
 						$(tile).append(event);
 					};
 				} else {
 					tileNumber.innerText = '';
 					dayOfColumn = 0;
+					tile.style.pointerEvents = 'none';
 				};
 				
 			tile.appendChild(tileNumber);
 			$('#calendar__dates').append(tile);
 		});
 	};
-	renderGrid();
+	renderGrid(willsMonth);
 
-	var modalContainer = $('#modals');
-	var newEvent = $('#new-event');
-	var cancelModal = $('#cancel-modal');
-
+	// Navigation to previous month
 	$('#prev').click(function() {
-		willsMonth --;
-		renderGrid();
+		willsMonths = willsMonth--;
+		renderGrid(willsMonth);
 	});
 
+	// Navigation to next month
 	$('#next').click(function() {
-		willsMonth ++;
-		renderGrid();
+		renderGrid(willsMonth++);
 	});
 
+	// Submitting modal to create/update events
 	$('#submit-modal').click(function(e) {
 		e.preventDefault();
 		var eventName = $('#event-name').val();
 		var eventDate = $('#event-date').val();
-		var convertedDate = new Date(eventDate);
+		var convertedDate = new Date(eventDate.replace('-', '/'));
 		var convertedYear = convertedDate.getFullYear();
 		var convertedMonth = convertedDate.getMonth();
-		var convertedDay = convertedDate.getDate()+1;
+		var convertedDay = convertedDate.getDate();
 
 		calendarYear[months[convertedMonth]][convertedDay].eventName = eventName;
 		console.log({eventName, convertedYear, convertedMonth, convertedDay});
-		renderGrid();
+		renderGrid(willsMonth);
 		closeModal();
 		$('#event-name').val('');
 		$('#event-date').val('');
 	});
 
+	// Create event when clicking button
 	$(newEvent).click(function() {
 		$(modalContainer).css({'opacity': '1', 'pointer-events': 'auto'});
+		$('#modal-title').text('Create a New Event');
+		$('#submit-modal').text('Create Event');
 	});
 
-	$('.tile').on('click', function(e) {
-		console.log(e);
-		console.log(this);
+	// Create event when clicking tile
+	$('#calendar__dates').on('click', '.tile', function(e) {
 		$(modalContainer).css({'opacity': '1', 'pointer-events': 'auto'});
 		$('#event-date').val(e.target.getAttribute('date'));
+		$('#modal-title').text('Create a New Event');
+		$('#submit-modal').text('Create Event');
 	});
 
+	// Edit event
+	$('#calendar__dates').on('click', '.tile__event', function(e) {
+		var eventParent = $(this).parent();
+
+		$(modalContainer).css({'opacity': '1', 'pointer-events': 'auto'});
+		$('#modal-title').text('Edit ' + $('.tile__event').attr('event-name'));
+		$('#submit-modal').text('Save Event');
+		$('#event-name').val($('.tile__event').attr('event-name'));
+		$('#event-date').val(eventParent.attr('date'));
+		$('#modal__footer').prepend('<button type="button" id="delete-event" class="btn btn--flat btn--square"><img src="asset/icon/delete.svg"/></button>');
+		e.stopPropagation();
+	});
+
+	// Delete event
+	$('#modal__footer').on('click', '#delete-event', function(e) {
+		e.preventDefault();
+		console.log($('#event-date').val())
+		var selectedDate = new Date($('#event-date').val());
+		delete calendarYear[months[selectedDate.getMonth()]][selectedDate.getDate()+1].eventName;
+		renderGrid(willsMonth);
+		$('#delete-event').remove();
+		closeModal();
+	});
+
+	// Close modal
 	function closeModal() {
 		$(modalContainer).css({'opacity': '0', 'pointer-events': 'none'});
 		$('#event-name').val('');
 		$('#event-date').val('');
-	};
+		$('#delete-event').remove();
+	}
 
-	$(cancelModal).click(closeModal);
+	// Event listener for modal 'Cancel' button
 	$(cancelModal).click(closeModal);
 
 	console.log(calendarYear[months[willsMonth]]);
 });
-
-
-
-
-
-
-
-
-
-// var date = new Date();
-// var month = date.getMonth();
-// var calendarTitle = document.getElementById("header__title");
-// var calendarBody = document.getElementById("calendar__dates");
-// var prev = document.getElementById("prev");
-// var next = document.getElementById("next");
-// var modalContainer = document.getElementById("modals");
-// var newEvent = document.getElementById("new-event");
-// var cancelModal = document.getElementById("cancel-modal");
-// var submitModal = document.getElementById("submit-modal");
-// var monthStart = new Date(year, month);
-// var monthStartDayIndex = monthStart.getDay();
-// var weeksArray = [];
-// var week = 1;
-// var dayCount = 0;
-// var startDay = new Date(monthStart);
-
-// console.log(date)
-// console.log(month)
-
-// // Event Listeners
-// prev.addEventListener("click", goToPrev);
-// next.addEventListener("click", goToNext);
-// newEvent.addEventListener("click", openModal);
-// cancelModal.addEventListener("click", closeModal);
-// submitModal.addEventListener("click", submitModal);
-
-// // Functions
-// function getMonthYear() {
-// 	calendarTitle.innerText = months[month] + " " + year;
-// }
-
-// function getDates() {
-// 	while (calendarBody.hasChildNodes()) {
-// 		calendarBody.removeChild(calendarBody.firstChild);
-// 	}
-
-// 	monthStart = new Date(year, month);
-// 	monthStartDayIndex = monthStart.getDay();
-// 	weeksArray = [];
-// 	week = 1;
-// 	dayCount = 0;
-// 	startDay = new Date(monthStart);
-
-// 	// Subtracting first of month's index from it's date to yield Sunday of first
-// 	startDay.setDate(monthStart.getDate() - monthStartDayIndex);
-
-// 	while (week < 7) {
-// 		if (dayCount == 0) {
-// 			weeksArray.push([]);
-// 		}
-// 		weeksArray[week - 1].push(startDay.getDate());
-// 		dayCount++;
-// 		startDay.setDate(startDay.getDate() + 1);
-// 		if (dayCount == 7) {
-// 			week++;
-// 			dayCount = 0;
-// 		}
-// 	}
-
-// 	weeksArray.forEach(function(array) {
-// 		var row = document.createElement("div");
-// 		row.className = "week";
-// 		calendarBody.appendChild(row);
-
-// 		for (i = 0; i < array.length; i++) {
-// 			var tile = document.createElement("div");
-// 			var tileNumber = document.createElement("div");
-// 			tile.dataset.day = array[i];
-// 			tile.dataset.month = month;
-// 			tile.className = "tile";
-// 			tileNumber.className = "tile__number";
-// 			tileNumber.innerText = array[i];
-// 			tile.appendChild(tileNumber);
-// 			row.appendChild(tile);
-// 			console.log({month,day:array[i]})
-// 		}
-// 	});
-// }
-
-// function getHead() {
-// 	for (i = 0; i < days.length; i++) {
-// 		var calendarHeadItem = document.createElement("div");
-// 		calendarHeadItem.className = "head__item";
-// 		calendarHeadItem.innerText = days[i];
-
-// 		calendarHead.appendChild(calendarHeadItem);
-// 	}
-// }
-
-// function goToPrev() {
-// 	month--;
-// 	if (month < 0) {
-// 		month = 11;
-// 		year--;
-// 	}
-// 	calendarTitle.innerText = months[month] + " " + year;
-// 	getDates();
-// }
-
-// function goToNext() {
-// 	month++;
-// 	if (month > 11) {
-// 		month = 0;
-// 		year++;
-// 	}
-// 	calendarTitle.innerText = months[month] + " " + year;
-// 	getDates();
-// }
-
-// function openModal() {
-// 	modalContainer.style.opacity = "1";
-// 	modalContainer.style.pointerEvents = "auto";
-// }
-
-// function closeModal() {
-// 	modalContainer.style.opacity = "0";
-// 	modalContainer.style.pointerEvents = "none";
-// }
-
-// function submitModal() {
-// 	modalContainer.style.opacity = "0";
-// 	modalContainer.style.pointerEvents = "none";
-// }
-
-// // Calls
-// getMonthYear();
-// getHead();
-// getDates();

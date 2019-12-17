@@ -10,6 +10,8 @@
         line-height: 3rem;
         text-align: center;
         font-weight: 600;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
     
         &:last-child {
             border-right: none;
