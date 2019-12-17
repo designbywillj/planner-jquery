@@ -33,6 +33,10 @@ body {
 			cursor: pointer;
 		}
 	}
+
+	&__title {
+		margin-left: $spacing-3;
+	}
 }
 
 #main {
@@ -40,10 +44,13 @@ body {
 	display: flex;
 
 	#menu {
-		flex: 0 0 15rem;
+		flex: 0 0 16rem;
 		height: 100%;
-		padding: $spacing-3;
+		padding: $spacing-3 $spacing-3 0;
 		border-right: 1px solid $light-gray;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
 
 		.btn {
 			width: 100%;
@@ -59,14 +66,6 @@ body {
 
 #calendar__dates {
 	flex: 1 1 100%;
-
-	.week {
-		height: 16.6666%;
-		display: flex;
-		border-bottom: 1px solid $light-gray;
-
-		&:last-child {
-			border-bottom: none;
-		}
-	}
+	flex-wrap: wrap;
+	display: flex;
 }

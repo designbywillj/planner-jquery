@@ -1,7 +1,13 @@
 .tile {
 	flex: 0 0 14.2857%;
+	height: 16.6666%;
 	padding: $spacing-2;
+	border-bottom: 1px solid $light-gray;
 	border-right: 1px solid $light-gray;
+	display: flex;
+	justify-content: flex-end;
+	flex-direction: column-reverse;
+	overflow: hidden;
 
 	&:last-child {
 		border-right: none;
@@ -9,6 +15,7 @@
 
 	&__number {
 		width: 2rem;
+		margin-bottom: $spacing-2;
 		line-height: 2rem;
 		text-align: center;
 		font-weight: 600;

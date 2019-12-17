@@ -16,14 +16,14 @@
 				<img src="asset/img/logo.svg" alt="Planner logo">
 			</div>
 	
-			<div id="header__control">
+			<!-- <div id="header__control">
 				<button type="button" id="prev" class="btn btn--square btn--flat">
 					<img src="asset/icon/arrow-left.svg" alt="Previous">
 				</button>
 				<button id="next" class="btn btn--square btn--flat">
 					<img src="asset/icon/arrow-right.svg" alt="Next">
 				</button>
-			</div>
+			</div> -->
 
 			<h3 id="header__title"></h3>
 		</header>
@@ -34,6 +34,10 @@
 					<img src="asset/icon/plus.svg" alt="">
 					New
 				</button>
+				<a href="https://designbywillj.com" target="_blank" class="author">
+					<div class="author__title">Designed &amp; Developed by</div>
+					<div class="author__name">Will Johnson</div>
+				</a>
 			</article>
 	
 			<article id="calendar">
@@ -45,7 +49,7 @@
 		<div id="modals" class="modals" style="opacity:0; pointer-events:none;">
 			<form id="modal" class="modal">
 				<div class="modal__header">
-					<h3>Create a New Event</h3>
+					<h3 id="modal-title"></h3>
 				</div>
 				<div class="modal__body">
 					<div class="input">
@@ -54,12 +58,12 @@
 					</div>
 					<div class="input">
 						<label for="event-date" class="input__label">Date</label>
-						<input type="datetime-local" id="event-date" class="input__item" placeholder="Name of the event">
+						<input type="date" id="event-date" class="input__item" placeholder="Select Date">
 					</div>
 				</div>
-				<div class="modal__footer">
+				<div id="modal__footer" class="modal__footer">
 					<button type="button" id="cancel-modal" class="btn btn--secondary">Cancel</button>
-					<input type="submit" id="submit-modal" class="btn btn--primary" value="Create Event"/>
+					<button type="button" id="submit-modal" class="btn btn--primary"></button>
 				</div>
 			</form>
 		</div>
